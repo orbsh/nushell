@@ -181,4 +181,4 @@ During the development and testing of argx.nu, several common architectural ques
 - [x] select the corresponding item in the `pipelines` based on the `offset` (get-ast)
 - [x] parse filepath type
 ---
-[Others](https://github.com/fj0r/nushell/blob/main/README.md)
+[Others](https://github.com/orbsh/nushell/blob/main/README.md)

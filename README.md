@@ -1,16 +1,16 @@
-- [Scratch](https://github.com/fj0r/scratch.nu) Scratch, Todo, Code executor, Counter
-- [AI](https://github.com/fj0r/ai.nu) Use AI in Nushell
-- [Docker](https://github.com/fj0r/docker.nu) Docker, Nerdctl, Podman
-- [Kubernetes](https://github.com/fj0r/kubernetes.nu) Kubernetes
-- [Git](https://github.com/fj0r/git.nu) Git, Workflow, Activities
-- [Powerline prompt](https://github.com/fj0r/powerline.nu) NU_POWERLINE
-- [Project](https://github.com/fj0r/project.nu) Commands based on dir, git hook, parse-env, registry
-- [Argx](https://github.com/fj0r/argx.nu) argx.nu 🚀
-- [minio-client](https://github.com/fj0r/minio-client.nu)
-- [dev-container](https://github.com/fj0r/devcontainer.nu) work with ci
+- [Scratch](https://github.com/orbsh/scratch.nu) Scratch, Todo, Code executor, Counter
+- [AI](https://github.com/orbsh/ai.nu) Use AI in Nushell
+- [Docker](https://github.com/orbsh/docker.nu) Docker, Nerdctl, Podman
+- [Kubernetes](https://github.com/orbsh/kubernetes.nu) Kubernetes
+- [Git](https://github.com/orbsh/git.nu) Git, Workflow, Activities
+- [Powerline prompt](https://github.com/orbsh/powerline.nu) NU_POWERLINE
+- [Project](https://github.com/orbsh/project.nu) Commands based on dir, git hook, parse-env, registry
+- [Argx](https://github.com/orbsh/argx.nu) argx.nu 🚀
+- [minio-client](https://github.com/orbsh/minio-client.nu)
+- [dev-container](https://github.com/orbsh/devcontainer.nu) work with ci
 - [nvim](scripts/nvim)
-- [Cwdhist](https://github.com/fj0r/cwdhist.nu)
-- [history-utils](https://github.com/fj0r/history-utils.nu)
+- [Cwdhist](https://github.com/orbsh/cwdhist.nu)
+- [history-utils](https://github.com/orbsh/history-utils.nu)
 - [Os-utils](scripts/os)
 - [log](scripts/lg)
-- [ssh](https://github.com/fj0r/ssh.nu)
+- [ssh](https://github.com/orbsh/ssh.nu)

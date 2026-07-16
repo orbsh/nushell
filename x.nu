@@ -25,7 +25,7 @@ export def 'dump nu_scripts' [...mod:string@cmpl-mod --reverse(-r)] {
             (git-sync
                 $'($o)/($x.from)' $t
                 --push
-                --init=$"git@github-orbit:orbit-shift/($x.to).nu.git"
+                --init=$"git@github-orbit:orbsh/($x.to).nu.git"
                 --post-sync {|src, desc|
                     cd $desc
                     let md = ls | get name | path parse | where extension == 'md'
@@ -47,7 +47,7 @@ export def git-hooks [act ctx] {
         git add .
     }
     if $act == 'pre-push' and $ctx.branch == 'main' {
-        if $ctx.repo == 'git@github-orbit:orbit-shift/nushell.git' {
+        if $ctx.repo == 'git@github-orbit:orbsh/nushell.git' {
             dump nu_scripts
         }
     }
@@ -153,7 +153,7 @@ export def 'gen README' [] {
         let url = if ($x.to? | is-empty) or ($x.disable? | default false) {
             $dist
         } else {
-            $"https://github.com/fj0r/($x.to).nu"
+            $"https://github.com/orbsh/($x.to).nu"
         }
         let title = $"- [($x.title)]\(($url)\)"
         [$title ...$desc] | str join ' '

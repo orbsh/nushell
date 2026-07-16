@@ -1,4 +1,4 @@
 # work with ci
 
 ---
-[Others](https://github.com/fj0r/nushell/blob/main/README.md)
+[Others](https://github.com/orbsh/nushell/blob/main/README.md)

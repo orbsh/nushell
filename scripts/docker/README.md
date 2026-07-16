@@ -27,4 +27,4 @@ preset:
 - specify the `container_name` field, delete the existing container if it exists and then run.
 
 ---
-[Others](https://github.com/fj0r/nushell/blob/main/README.md)
+[Others](https://github.com/orbsh/nushell/blob/main/README.md)

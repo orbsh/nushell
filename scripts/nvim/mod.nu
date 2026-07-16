@@ -1,5 +1,5 @@
 ## neovim configurations in `nvim.lua`
-## or https://github.com/fj0r/nvim-taberm
+## or https://github.com/orbsh/nvim-taberm
 
 export def nvim-send [message: string --expr] {
     let msg = if $expr {
