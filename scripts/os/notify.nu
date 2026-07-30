@@ -3,6 +3,9 @@ export def notify-self [msg?] {
 }
 
 export-env {
+    # Minimum command duration that triggers a notification
+    $env.NOTIFY_MIN_DURATION = 3sec
+
     # 1. Record command start time
     $env.config.hooks.pre_execution = [
         { ||
@@ -17,7 +20,7 @@ export-env {
             if 'CMD_START_TIME' in $env {
                 let d = (date now) - ($env.CMD_START_TIME | into datetime)
 
-                if $d > 3sec {
+                if $d > $env.NOTIFY_MIN_DURATION {
                     let flag = if $env.LAST_EXIT_CODE == 0 { '✔' } else { '✘' }
                     let title = $"[($flag)]($env.LAST_COMMAND | str substring ..20)"
                     let msg = {
