@@ -17,6 +17,7 @@ $env.config.completions.algorithm = "fuzzy" # prefix|substring|fuzzy
 $env.config.completions.partial = false
 $env.config.table.header_on_separator = true
 $env.config.table.mode = "frameless" # light|compact|frameless
+$env.config.max_last_result_size = 10mb
 
 if not ($nu.data-dir | path exists) { mkdir $nu.data-dir }
 if not ($nu.cache-dir | path exists) { mkdir $nu.cache-dir }
