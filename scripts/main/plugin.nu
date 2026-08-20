@@ -4,20 +4,20 @@ use lg
 # use perform-or-print *
 
 # use git/entry.nu *
-# use git *
+use git *
 
 # use kubernetes/entry.nu *
-# use kubernetes *
+use kubernetes *
 
 # use docker/entry.nu *
-# use docker *
+use docker *
 
 # use scratch/entry.nu *
 # use scratch *
 # use scratch/integration/git.nu *
 
 # use llm/entry.nu *
-# use llm *
+use llm *
 # use llm/integration/web.nu *
 # source llm/agents/kubernetes.nu
 # source llm/agents/research.nu
@@ -30,14 +30,14 @@ use ssh *
 
 use std/dirs
 # autoload
-# use os *
+use os *
 use nvim *
-# use nushell.nu *
+use nushell.nu *
 # use benchmark
 use cwdhist *
 
-# use history-utils *
-# use history-utils/backup.nu *
+use history-utils *
+use history-utils/backup.nu *
 # use resolvenv
 
 # use git-cmp.nu *
