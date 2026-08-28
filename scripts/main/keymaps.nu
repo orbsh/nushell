@@ -1,5 +1,5 @@
 if ($env.PREFER_ALT? | default '0' | into int) > 0 {
-    $env.config.keybindings ++= [
+    $env.config.keybindings = [
         [name, modifier, keycode, event, mode];
         [
             move_one_word_left,
@@ -129,4 +129,11 @@ if ($env.PREFER_ALT? | default '0' | into int) > 0 {
             emacs
         ],
     ]
+    | reduce -f $env.config.keybindings {|k, a|
+        if ($a | any {|r| $r.name == $k.name }) {
+            $a
+        } else {
+            $a | append $k
+        }
+    }
 }
