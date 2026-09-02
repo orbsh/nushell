@@ -35,6 +35,7 @@ if $nu.os-info.family == 'windows'  {
         ($env.HOME)/.cargo/bin
         ($env.HOME)/.ghcup/bin
         ($env.HOME)/.local/bin
+        ($env.HOME)/.venvs/base/bin
         /opt/*/bin
         ($env.LS_ROOT? | default /opt)/*/bin
     ]
