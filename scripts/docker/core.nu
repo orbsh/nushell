@@ -242,8 +242,8 @@ export def --wrapped container-attach [
 
 # copy file
 export def container-copy-file [
-    lhs: string@cmpl-docker-cp
-    rhs: string@cmpl-docker-cp
+    lhs: path@cmpl-docker-cp
+    rhs: path@cmpl-docker-cp
 ] {
     container cp (expand-exists $lhs) (expand-exists $rhs)
 }

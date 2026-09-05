@@ -341,8 +341,8 @@ export def kube-port-forward [
 
 # kubectl cp
 export def kube-copy [
-    lhs: string@cmpl-kube-cp
-    rhs: string@cmpl-kube-cp
+    lhs: path@cmpl-kube-cp
+    rhs: path@cmpl-kube-cp
     --container (-c): string@cmpl-kube-ctns
     --namespace (-n): string@cmpl-kube-ns
 ] {

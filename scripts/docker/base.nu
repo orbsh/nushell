@@ -29,7 +29,14 @@ export def --wrapped container [...args] {
 }
 
 export def expand-exists [p] {
-    if ($p | path exists) {
+    # order matters: absolute paths must expand even with ':' in name;
+    # ':' marks container/ssh path — skip expansion before exists-check so a
+    # local namesake can't hijack it
+    if ($p | str starts-with '~') or ($p | str starts-with '/') {
+        $p | path expand
+    } else if ($p | str contains ':') {
+        $p
+    } else if ($p | path exists) {
         $p | path expand
     } else {
         $p

@@ -81,24 +81,24 @@ export def mc-tree [
 }
 
 export def --wrapped mc-mv [
-    src: string@'nu-cmp mc-src'
-    dest: string@'nu-cmp mc-dest'
+    src: path@'nu-cmp mc-src'
+    dest: path@'nu-cmp mc-dest'
     ...args
 ] {
     ^mcli mv ...args $src $dest
 }
 
 export def --wrapped  mc-cp [
-    src: string@'nu-cmp mc-src'
-    dest: string@'nu-cmp mc-dest'
+    src: path@'nu-cmp mc-src'
+    dest: path@'nu-cmp mc-dest'
     ...args
 ] {
     ^mcli cp ...$args $src $dest
 }
 
 export def --wrapped mc-put [
-    src: string
-    dest: string@'nu-cmp mc-dest'
+    src: path
+    dest: path@'nu-cmp mc-dest'
     ...args
 ] {
     ^mcli put ...$args $src $dest
