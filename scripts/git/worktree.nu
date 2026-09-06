@@ -22,7 +22,7 @@ def ensure-ignore [] {
 }
 
 export def --env git-worktree-add [
-    branch: string@cmpl-git-branches
+    branch: string@cmpl-git-other-branches
 ] {
     ensure-ignore
     let prev = (_git_status).branch
