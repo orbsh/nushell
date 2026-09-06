@@ -4,6 +4,15 @@ export def gs [] {
     git status
 }
 
+export def git-top-level [] {
+    git rev-parse --show-toplevel
+}
+
+# List local branches reliably (pure names, no decorators)
+export def git-branches [] {
+    git branch --format '%(refname:short)' | lines
+}
+
 export def _git_status [] {
     # TODO: show-stash
     let raw_status = do -i { git --no-optional-locks status --porcelain=2 --branch | lines }

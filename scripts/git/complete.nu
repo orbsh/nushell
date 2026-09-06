@@ -23,10 +23,7 @@ export def cmpl-git-branch-files [context: string, offset:int] {
 }
 
 export def cmpl-git-branches [] {
-    git branch
-    | lines
-    | where {|x| not ($x | str starts-with '*')}
-    | each {|x| $"($x|str trim)"}
+    git branch --format '%(refname:short)' | lines
 }
 
 export def cmpl-git-remotes [] {

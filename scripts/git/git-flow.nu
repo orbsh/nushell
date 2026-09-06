@@ -17,10 +17,8 @@ export-env {
 }
 
 def git-kind-select [kind] {
-    git branch
+    git-branches
     | lines
-    | where { $in | str starts-with '*' | not $in }
-    | each {|x| $"($x|str trim)"}
     | where {|x|
         let branches = $env.GIT_FLOW.branches
         let sep = $env.GIT_FLOW.separator

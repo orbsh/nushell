@@ -161,7 +161,7 @@ export def git-ignore [--empty-dir] {
             '!.gitignore'
         ] | str join (char newline) | save .gitignore
     } else {
-        ^$env.EDITOR ([(git rev-parse --show-toplevel) .gitignore] | path join)
+        ^$env.EDITOR ([(git-top-level) .gitignore] | path join)
     }
 }
 
@@ -205,7 +205,7 @@ export def git-pull-push [
         let prev = (_git_status).branch
         let branch = if ($branch | is-empty) { $prev } else { $branch }
         let branch_repr = $'(ansi yellow)($branch)(ansi light_gray)'
-        let lbs = git branch | lines | each { $in | str substring 2..}
+        let lbs = git-branches
         let rbs = remote_branches
         if $"($remote)/($branch)" in $rbs {
             if $branch in $lbs {
@@ -292,7 +292,7 @@ export def git-delete [
             $'git rm --cached --ignore-unmatch ($f)'
             --prune-empty --tag-name-filter cat
             -- --all)
-        rm -rf ([(git rev-parse --show-toplevel) .git/refs/original/] | path join)
+        rm -rf ([(git-top-level) .git/refs/original/] | path join)
         ggc
     } else {
         if $cached { $args ++= [--cached] }

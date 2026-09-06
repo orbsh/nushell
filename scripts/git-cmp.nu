@@ -4,7 +4,7 @@
 #
 # This is a simplified version of completions for git branches and git remotes
 def cmpl-git-branches [] {
-  ^git branch | lines | each { |line| $line | str replace --regex '[\*\+] ' '' | str trim }
+  git branch --format '%(refname:short)' | lines
 }
 
 def cmpl-git-remotes [] {
