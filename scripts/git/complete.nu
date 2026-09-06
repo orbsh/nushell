@@ -29,8 +29,8 @@ export def cmpl-git-branches [] {
 }
 
 export def cmpl-git-other-branches [] {
-    let cur = (_git_status).branch
-    git-branches | where {|x| $x != $cur }
+    let cur = git-current-branch
+    git-branches | where $in != $cur
 }
 
 export def cmpl-git-remotes [] {

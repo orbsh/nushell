@@ -84,7 +84,7 @@ export def git-branch [
     --delete (-d)
     --no-merged (-n)
 ] {
-    let bs = git branch | lines | each {|x| $x | str substring 2..}
+    let bs = git-branches
     if $delete {
         let remote_branches = remote_branches
         if ($branch | is-empty) {
@@ -161,7 +161,7 @@ export def git-unmerged [] {
 
 # git clone, init
 export def --env git-new [
-    repo?:            string@cmpl-git-branches
+    repo?:            string
     local?:           path
     --submodule (-s)  # git submodule
     --init (-i)       # git init
@@ -224,7 +224,7 @@ export def git-pull-push [
         git commit --allow-empty -m $"🫙($empty)"
         git push
     } else if $force {
-        let prev = (_git_status).branch
+        let prev = git-current-branch
         let branch = if ($branch | is-empty) { $prev } else { $branch }
         if $prev != $branch { git checkout $branch }
         tips $"force pushing ($branch) to ($remote)..."
@@ -238,7 +238,7 @@ export def git-pull-push [
         # git fetch --prune
         let m = if $rebase { [--rebase] } else { [] }
         let a = if $autostash {[--autostash]} else {[]}
-        let prev = (_git_status).branch
+        let prev = git-current-branch
         let branch = if ($branch | is-empty) { $prev } else { $branch }
         let branch_repr = $'(ansi yellow)($branch)(ansi light_gray)'
         let lbs = git-branches
@@ -420,7 +420,7 @@ export def git-diff [
 
 # git merge
 export def git-merge [
-    branch?:            string@cmpl-git-branches
+    branch?:            string@cmpl-git-other-branches
     --abort (-a)
     --continue (-c)
     --quit (-q)
@@ -449,8 +449,8 @@ export def git-merge [
 
 # git rebase
 export def git-rebase [
-    branch?:            string@cmpl-git-branches
-    --from (-f):        string@cmpl-git-branches
+    branch?:            string@cmpl-git-other-branches
+    --from (-f):        string@cmpl-git-other-branches
     --interactive (-i)
     --onto (-o):        string
     --abort (-a)
@@ -514,7 +514,7 @@ export def git-cherry-pick [
 
 # copy file from other branch
 export def git-copy-file [
-    branch:     string@cmpl-git-branches
+    branch:     string@cmpl-git-other-branches
     ...file:    string@cmpl-git-branch-files
 ] {
     ^git checkout $branch $file

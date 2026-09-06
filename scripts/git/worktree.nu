@@ -25,7 +25,7 @@ export def --env git-worktree-add [
     branch: string@cmpl-git-other-branches
 ] {
     ensure-ignore
-    let prev = (_git_status).branch
+    let prev = git-current-branch
     if $branch == $prev { return }
     if $branch not-in (git-branches) {
         git checkout -b $branch

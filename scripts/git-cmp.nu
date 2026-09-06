@@ -7,6 +7,10 @@ def cmpl-git-branches [] {
   git branch --format '%(refname:short)' | lines
 }
 
+def cmpl-git-other-branches [] {
+  git branch --format '%(refname:short)' | lines | where $in != (git branch --show-current)
+}
+
 def cmpl-git-remotes [] {
   ^git remote | lines | each { |line| $line | str trim }
 }
@@ -63,7 +67,7 @@ export extern "git fetch" [
 
 # Check out git branches and files
 export extern "git checkout" [
-  ...targets: string@cmpl-git-branches   # name of the branch or files to checkout
+  ...targets: string@cmpl-git-other-branches   # name of the branch or files to checkout
   --conflict: string                              # conflict style (merge or diff3)
   --detach(-d)                                    # detach HEAD at named commit
   --force(-f)                                     # force checkout (throw away local modifications)
@@ -91,7 +95,7 @@ export extern "git checkout" [
 # Push changes
 export extern "git push" [
   remote?: string@cmpl-git-remotes,      # the name of the remote
-  ...refs: string@cmpl-git-branches      # the branch / refspec
+  ...refs: string@cmpl-git-other-branches      # the branch / refspec
   --all                                           # push all refs
   --atomic                                        # request atomic transaction on remote side
   --delete(-d)                                    # delete refs

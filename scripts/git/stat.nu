@@ -7,6 +7,10 @@ export def git-top-level [] {
     git rev-parse --show-toplevel
 }
 
+export def git-current-branch [] {
+    git branch --show-current
+}
+
 # List local branches reliably (pure names, no decorators)
 export def git-branches [] {
     git branch --format '%(refname:short)' | lines
