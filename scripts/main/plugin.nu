@@ -61,7 +61,7 @@ $env.NU_POWER_SCHEMA = [
         [proxy, xterm_grey39]
         [host, xterm_grey30]
         # [ai, xterm_grey30]
-        [kube, xterm_grey23]
+        # [kube, xterm_grey23]
         [time, xterm_grey27]
     ]
 ]
