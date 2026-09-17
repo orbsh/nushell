@@ -48,4 +48,5 @@ export alias kah = kube-apply-helm
 export alias kdh = kube-diff-helm
 export alias kdelh = kube-delete-helm
 export alias kh = kube-helm
+export alias ks = kube-status
 

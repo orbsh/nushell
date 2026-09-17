@@ -82,6 +82,49 @@ export def --env kube-change-context [
     }
 }
 
+# 当前上下文状态总览: 集群/命名空间/用户/kubeconfig 文件与认证方式
+export def kube-status [] {
+    let conf = kube-config
+    let current = $conf.data | get current-context
+    let ctx = $conf.data | get contexts | where name == $current | first | get context
+    let cluster = $conf.data | get clusters | where name == $ctx.cluster | first | get cluster
+    let user = $conf.data | get users | where name == $ctx.user | first | get user
+
+    # 认证方式: client-cert / token / exec / auth-provider
+    let auth = if ($user | get -o 'client-certificate-data' | is-not-empty) or ($user | get -o 'client-certificate' | is-not-empty) {
+        'client-certificate'
+    } else if ($user | get -o token | is-not-empty) or ($user | get -o 'token-file' | is-not-empty) {
+        'token'
+    } else if ($user | get -o exec | is-not-empty) {
+        $'exec: ($user | get -o exec | get -o command)'
+    } else if ($user | get -o 'auth-provider' | is-not-empty) {
+        $'auth-provider: ($user | get -o 'auth-provider' | get -o name)'
+    } else {
+        'unknown'
+    }
+
+    # session kubeconfig (kcc -s) 时 KUBECONFIG 指向临时文件
+    let conf_file = if ($env.KUBECONFIG? | is-not-empty) {
+        {file: ($env.KUBECONFIG | path expand), session: true}
+    } else {
+        {file: $conf.path, session: false}
+    }
+
+    # default namespace 未显式设置时为 default
+    let ns = $ctx.namespace? | default 'default'
+
+    {
+        context: $current
+        cluster: $ctx.cluster
+        server: $cluster.server
+        namespace: $ns
+        user: $ctx.user
+        auth: $auth
+        config: $conf_file
+    }
+}
+
+
 # kubectl change namespace
 export def kube-change-namespace [namespace: string@cmpl-kube-ns] {
     if not ($namespace in (kubectl get namespace | from ssv -a | get NAME)) {
