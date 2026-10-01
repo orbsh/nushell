@@ -15,6 +15,7 @@ $env.config.history.isolation = true
 $env.config.history.ignore_space_prefixed = true
 $env.config.completions.algorithm = "fuzzy" # prefix|substring|fuzzy
 $env.config.completions.partial = true 
+$env.config.completions.persistent_menus = true 
 $env.config.table.header_on_separator = true
 $env.config.table.mode = "frameless" # light|compact|frameless
 $env.config.max_last_result_size = 10mb
