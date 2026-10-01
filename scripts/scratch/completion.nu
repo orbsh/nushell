@@ -44,16 +44,16 @@ export def list-untagged-root [type, ctx] {
     | { completions: $in, options: { sort: false } }
 }
 
-export def cmpl-untagged-root-scratch [ctx] {
+export def cmpl-untagged-root-scratch [buffer: string] {
     let cond = if NU_ARGX_EXISTS in $env {
-        $ctx | argx parse | get opt
+        $buffer | argx parse | get opt
     }
     list-untagged-root id $cond
 }
 
-export def cmpl-untagged-root-title [ctx] {
+export def cmpl-untagged-root-title [buffer: string] {
     let cond = if NU_ARGX_EXISTS in $env {
-        $ctx | argx parse | get opt
+        $buffer | argx parse | get opt
     }
     list-untagged-root title $cond
 }

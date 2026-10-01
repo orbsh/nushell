@@ -1,5 +1,5 @@
-def comp [ctx] {
-    let pat = $ctx | argx parse | get pos.pattern
+def comp [buffer: string] {
+    let pat = $buffer | argx parse | get pos.pattern
     rbw search $pat | lines | each {
         let p = $in | split row '/'
         let p = if ($p | length) > 1 {
@@ -17,12 +17,12 @@ def comp [ctx] {
     }
 }
 
-def comp-host [ctx] {
-    comp $ctx | each { $in | last } | uniq
+def comp-host [buffer: string] {
+    comp $buffer | each { $in | last } | uniq
 }
 
-def comp-user [ctx] {
-    comp $ctx | each {
+def comp-user [buffer: string] {
+    comp $buffer | each {
         let x = $in
         { value: $x.1, description: $x.0 }
     }

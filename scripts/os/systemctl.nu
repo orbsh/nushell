@@ -101,8 +101,8 @@ export def "ssc services" [user, kw?: string] {
     }
 }
 
-def cmpl-systemctl-x [context: string, offset: int] {
-    let ctx = $context | argx parse
+def cmpl-systemctl-x [buffer: string] {
+    let ctx = $buffer | argx parse
     let cmd = $ctx.args.1
     let input = $ctx.args.2?
     let user = 'user' in $ctx.opt

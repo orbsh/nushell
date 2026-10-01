@@ -3,8 +3,8 @@ use ../tag_base.nu *
 use argx
 use llm *
 
-def cmpl-namer [ctx] {
-    let text = $ctx | argx parse | get args | tags-group | get other | str join ' '
+def cmpl-namer [buffer: string] {
+    let text = $buffer | argx parse | get args | tags-group | get other | str join ' '
     if ($text | is-not-empty) {
         let o = do -i { $text | ai-do generating-names zh usual -o }
         $o

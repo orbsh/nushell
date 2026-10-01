@@ -17,8 +17,8 @@ def cmpl-dir [] {
         from dirs join commands on id = dir_id group by dir;"
 }
 
-def cmpl-cmd [ctx] {
-    let dir = $ctx | argx parse | get pos.dir
+def cmpl-cmd [buffer: string] {
+    let dir = $buffer | argx parse | get pos.dir
     sqlx $"select command from dirs join commands on id = dir_id where dir = (Q $dir)" | get command
 }
 

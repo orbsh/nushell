@@ -65,8 +65,8 @@ def 'parse args' [] {
     return { opt: $opt, rest: $rest }
 }
 
-def cmpl-rustic-snapshots [context] {
-    let c = $context | parse args
+def cmpl-rustic-snapshots [buffer: string] {
+    let c = $buffer | parse args
     let s = if 'P' in $c.opt {
         ^rustic -P $c.opt.P snapshots --json
     } else {

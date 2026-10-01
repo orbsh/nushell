@@ -1,6 +1,6 @@
-def cmpl-registry-show [cmd: string, offset: int] {
-    let new = $cmd | str ends-with ' '
-    let cmd = $cmd | split row ' '
+def cmpl-registry-show [buffer: string] {
+    let new = $buffer | str ends-with ' '
+    let cmd = $buffer | split row ' '
     let url = $cmd.3?
     let reg = $cmd.4?
     let tag = $cmd.5?

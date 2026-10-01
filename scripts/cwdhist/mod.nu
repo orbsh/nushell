@@ -96,8 +96,8 @@ export-env {
             selected_text: green_reverse
             description_text: yellow
         }
-        source: { |buffer, position|
-            #$"[($position)]($buffer);(char newline)" | save -a ~/.cache/cwdhist.log
+        source: { |buffer, place|
+            #$"[($place.cursor)]($buffer);(char newline)" | save -a ~/.cache/cwdhist.log
             cwd history list ($buffer | split row ' ' | last)
         }
     }]

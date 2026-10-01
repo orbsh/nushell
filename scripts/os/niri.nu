@@ -3,7 +3,7 @@ export-env {
 }
 
 
-def cmpl-cmd [context] {
+def cmpl-cmd [] {
     use parser/indent.nu parse-indent
     niri msg --json out+err>| lines | get 1 | from nuon
 }
@@ -12,10 +12,10 @@ export def --wrapped nmsg [cmd: string@cmpl-cmd, ...args] {
     niri msg $cmd ...$args
 }
 
-def cmpl-actions [context] {
+def cmpl-actions [buffer: string] {
     use parser/indent.nu parse-indent
     use argx
-    let c = $context | argx parse
+    let c = $buffer | argx parse
     niri msg action out+err>| lines
     | parse-indent
     | get 'Actions:'

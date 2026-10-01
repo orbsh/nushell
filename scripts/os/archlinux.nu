@@ -39,21 +39,21 @@ def parse_pkg_list [] {
 
 use argx
 
-def cmpl-aur [ctx] {
-    let k = $ctx | argx parse
+def cmpl-aur [buffer: string] {
+    let k = $buffer | argx parse
     ^yay -Ss ($k.args | last)
     | parse_pkg_list
 }
 
 
-def cmpl-list [ctx] {
-    let k = $ctx | argx parse
+def cmpl-list [buffer: string] {
+    let k = $buffer | argx parse
     ^yay -Qs ($k.opt.list? | default '')
     | parse_pkg_list
 }
 
-def cmpl-remove [ctx] {
-    let k = $ctx | argx parse
+def cmpl-remove [buffer: string] {
+    let k = $buffer | argx parse
     ^yay -Qs ($k.opt.remove? | default '')
     | parse_pkg_list
 }

@@ -52,29 +52,29 @@ export def cmpl-kube-kind [] {
     }
 }
 
-export def cmpl-kube-res [context: string, offset: int] {
-    let ctx = $context | argx parse
+export def cmpl-kube-res [buffer: string] {
+    let ctx = $buffer | argx parse
     let kind = $ctx | get args.0
     let ns = if ($ctx.opt.namespace? | is-empty) { [] } else { [-n $ctx.opt.namespace] }
     kubectl get ...$ns $kind | from ssv -a | get NAME
 }
 
-export def cmpl-kube-res-via-name [context: string, offset: int] {
-    let ctx = $context | argx parse
+export def cmpl-kube-res-via-name [buffer: string] {
+    let ctx = $buffer | argx parse
     let kind = $env.KUBERNETES_RESOURCE_ABBR | get ($ctx.cmd | split row '-' | last)
     let ns = if ($ctx.opt.namespace? | is-empty) { [] } else { [-n $ctx.opt.namespace] }
     kubectl get ...$ns $kind | from ssv -a | get NAME
 }
 
-export def cmpl-kube-jsonpath [context: string] {
-    let ctx = $context | argx parse
+export def cmpl-kube-jsonpath [buffer: string] {
+    let ctx = $buffer | argx parse
     let kind = $ctx.args.0
     let res = $ctx.args.1
     let path = $ctx.opt.jsonpath?
     let ns = if ($ctx.opt.namespace? | is-empty) { [] } else { [-n $ctx.opt.namespace] }
     mut r = []
     if ($path | is-empty) {
-        if ($context | str ends-with '-p ') {
+        if ($buffer | str ends-with '-p ') {
             $r = ['.']
         } else {
             $r = ['']
@@ -105,13 +105,13 @@ export def cmpl-kube-jsonpath [context: string] {
 }
 
 
-export def cmpl-kube-nodes [context: string, offset: int] {
+export def cmpl-kube-nodes [] {
     kubectl get nodes -o wide | from ssv -a
     | each {|x| {value: $x.NAME, description: $"($x.INTERNAL-IP)(char tab)($x.ROLES)"} }
 }
 
-export def cmpl-kube-deploys [context: string, offset: int] {
-    let ctx = $context | argx parse
+export def cmpl-kube-deploys [buffer: string] {
+    let ctx = $buffer | argx parse
     mut args = []
     if ($ctx.opt.namespace? | is-not-empty) {
         $args ++= [-n $ctx.opt.namespace]
@@ -119,8 +119,8 @@ export def cmpl-kube-deploys [context: string, offset: int] {
     kubectl get ...$args deployments | from ssv -a | get NAME
 }
 
-export def cmpl-kube-deploys-and-pods [context: string, offset: int] {
-    let ctx = $context | argx parse
+export def cmpl-kube-deploys-and-pods [buffer: string] {
+    let ctx = $buffer | argx parse
     mut args = []
     if ($ctx.opt.namespace? | is-not-empty) {
         $args ++= [-n $ctx.opt.namespace]
@@ -133,8 +133,8 @@ export def cmpl-kube-deploys-and-pods [context: string, offset: int] {
     }
 }
 
-export def cmpl-kube-ctns [context: string, offset: int] {
-    let ctx = $context | argx parse
+export def cmpl-kube-ctns [buffer: string] {
+    let ctx = $buffer | argx parse
     mut args = []
     if ($ctx.opt.namespace? | is-not-empty) {
         $args ++= [-n $ctx.opt.namespace]
@@ -147,8 +147,8 @@ export def cmpl-port-forward-type [] {
     [pod svc]
 }
 
-export def cmpl-kube-port [context: string, offset: int] {
-    let ctx = $context | argx parse
+export def cmpl-kube-port [buffer: string] {
+    let ctx = $buffer | argx parse
     let kind = $ctx.args.0
     let ns = if ($ctx.opt.namespace? | is-empty) { [] } else { [-n $ctx.opt.namespace] }
     let res = $ctx.args.1
@@ -163,8 +163,8 @@ export def cmpl-kube-port [context: string, offset: int] {
     }
 }
 
-export def cmpl-kube-cp [cmd: string, offset: int] {
-    let ctx = $cmd | str substring ..<$offset | argx parse
+export def cmpl-kube-cp [buffer: string] {
+    let ctx = $buffer | argx parse
     let p = $ctx.args | last
     mut args = []
     if ($ctx.opt.namespace? | is-not-empty) {

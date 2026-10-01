@@ -1,15 +1,8 @@
-export def get-ast [offset?: int] {
+export def get-ast [] {
     let d = ast $in -j -m | get block | from json
-    let cur = if ($offset | is-empty) {
-        $d
+    let cur = $d
         | get -o pipelines | last
         | get elements | last
-    } else {
-        let p = $d | get -o pipelines
-        let o = $d.span.start + $offset
-        let matched = $p | each {|i| $i.elements } | flatten | where {|j| let s = $j.expr.span; ($s.start <= $o) and ($o <= $s.end) }
-        if ($matched | is-not-empty) { $matched.0 } else { null }
-    }
     if ($cur | is-not-empty) {
         $cur.expr.expr.Call?
     } else {
@@ -70,10 +63,10 @@ def get-args [] {
     $r
 }
 
-export def parse [offset?: int] {
+export def parse [] {
     let cmd = $in
 
-    let ast = $cmd | get-ast $offset
+    let ast = $cmd | get-ast
     if ($ast | is-empty) { return }
     let x = $ast | get-args
 

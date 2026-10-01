@@ -17,9 +17,9 @@ def list-alloc [job] {
     $r | str join (char newline) | from ssv -a
 }
 
-def cmpl-alloc [context] {
+def cmpl-alloc [buffer: string] {
     use argx
-    let ctx = $context | argx parse
+    let ctx = $buffer | argx parse
     list-alloc $ctx.pos.job
     | each {|x|
         {
@@ -30,9 +30,9 @@ def cmpl-alloc [context] {
     | { completions: $in, options: { sort: false } }
 }
 
-def cmpl-task [context] {
+def cmpl-task [buffer: string] {
     use argx
-    let ctx = $context | argx parse
+    let ctx = $buffer | argx parse
     nomad alloc logs $ctx.pos.alloc err>| lines
     | str trim
     | where {$in | str starts-with '*' }

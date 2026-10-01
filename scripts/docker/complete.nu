@@ -56,8 +56,8 @@ export def cmpl-docker-images [] {
     | each {|x| $"($x.REPOSITORY):($x.TAG)"}
 }
 
-export def cmpl-docker-cp [cmd: string, offset: int] {
-    let argv = $cmd | str substring ..<$offset | split row ' '
+export def cmpl-docker-cp [buffer: string] {
+    let argv = $buffer | split row ' '
     let p = if ($argv | length) > 2 { $argv | get 2 } else { $argv | get 1 }
     let container = container ps
         | from ssv -a

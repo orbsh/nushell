@@ -1,6 +1,6 @@
-def cmpl-snapshot [context] {
+def cmpl-snapshot [buffer: string] {
     use argx
-    let c = $context | argx parse
+    let c = $buffer | argx parse
     qemu-img info --out=json ($c.pos.disk | path expand)
     | from json | get snapshots
     | each {|x|

@@ -12,11 +12,11 @@ export def common-ips [] {
     $r
 }
 
-def cmpl-proxys [context: string, offset: int] {
-    let pre = $context | str substring ('toggle proxy ' | str length)..
-    if ($context | str ends-with ':') {
+def cmpl-proxys [buffer: string] {
+    let pre = $buffer | str substring ('toggle proxy ' | str length)..
+    if ($buffer | str ends-with ':') {
         [7890 7891 1080] | each {|x| $"($pre)($x)"}
-    } else if ($context | str ends-with '/') {
+    } else if ($buffer | str ends-with '/') {
         let a = common-ips | transpose description value
         $a | each {|x|
             $x | update value $"($pre)($x.value):"

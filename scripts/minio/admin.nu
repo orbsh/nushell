@@ -129,8 +129,8 @@ export def 'mc-policy ls' [--target(-t): string@mc-alias] {
     ^mcli admin policy ls ($target | mctg) | lines
 }
 
-def 'nu-cmp mc-policy' [context] {
-    let t = $context | argx parse | get -o opt.target | mctg
+def 'nu-cmp mc-policy' [buffer: string] {
+    let t = $buffer | argx parse | get -o opt.target | mctg
     mc-policy ls -t $t
 }
 
@@ -205,8 +205,8 @@ export def 'mc-policy' [
     ^mcli admin policy $sub ($target | mctg) $policy
 }
 
-def 'nu-cmp mc-users' [context] {
-    let t = $context | argx parse | get -o opt.target | mctg
+def 'nu-cmp mc-users' [buffer: string] {
+    let t = $buffer | argx parse | get -o opt.target | mctg
     [
         ...(mc-accesskey ls -t $t)
         ...(mc-users -t $t)

@@ -21,8 +21,8 @@ def cmpl-just-recipes [] {
         }
 }
 
-def cmpl-just-args [context: string, offset: int] {
-    let r = ($context | split row ' ')
+def cmpl-just-args [buffer: string] {
+    let r = ($buffer | split row ' ')
     ^just -u --dump --dump-format json
         | from json
         | get recipes

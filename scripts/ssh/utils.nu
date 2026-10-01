@@ -1,7 +1,7 @@
 use argx
 
-def cmpl-scp [cmd: string, offset: int] {
-    let ctx = $cmd | str substring ..<$offset | argx parse
+def cmpl-scp [buffer: string] {
+    let ctx = $buffer | argx parse
     let p = $ctx.args | slice (-1)..-1 | default ''
     let ssh = cmpl-ssh
     let n = $p | split row ':'

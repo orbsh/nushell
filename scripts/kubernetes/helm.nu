@@ -8,13 +8,13 @@ export def record-to-set-json [value] {
     | str join ','
 }
 
-def cmpl-helm-list [context: string, offset: int] {
-    let ctx = $context | argx parse
+def cmpl-helm-list [buffer: string] {
+    let ctx = $buffer | argx parse
     kube-get-helm -n $ctx.opt.namespace? | each {|x| {value: $x.name  description: $x.updated} }
 }
 
-def cmpl-helm-charts [context: string, offset: int] {
-    let ctx = $context | argx parse
+def cmpl-helm-charts [buffer: string] {
+    let ctx = $buffer | argx parse
     let path = $ctx | get pos.chart?
     let paths = do -i { ls ($"($path)*/**/Chart.yaml" | into glob) | each { $in.name | path dirname } }
     helm repo list | from ssv -a | rename value description

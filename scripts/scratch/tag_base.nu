@@ -39,11 +39,11 @@ export def cmpl-tag-id [] {
     }
 }
 
-export def cmpl-id-tag [ctx] {
+export def cmpl-id-tag [buffer: string] {
     if NU_ARGX_EXISTS not-in $env {
         cmpl-tags ':'
     } else {
-        $ctx | argx parse | get -o pos.id | id-tag
+        $buffer | argx parse | get -o pos.id | id-tag
     }
 }
 

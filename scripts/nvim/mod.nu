@@ -182,16 +182,16 @@ export def nvc [
     }
 }
 
-export def cmpl-cwdhist [context] {
-    let kw = $context | split row ' ' | last
+export def cmpl-cwdhist [buffer: string] {
+    let kw = $buffer | split row ' ' | last
     use cwdhist *
     cwd history list $kw
     | rename value description
     | { completions: $in, options: { sort: false } }
 }
 
-export def cmpl-cwdhist-files [context] {
-    let p = $context | argx parse | get -o pos.path
+export def cmpl-cwdhist-files [buffer: string] {
+    let p = $buffer | argx parse | get -o pos.path
     cd $p
     ls | get name
 }
