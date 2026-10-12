@@ -85,10 +85,10 @@ export def ssh-switch  [
     $o | save -f ([$env.HOME .ssh config] | path join)
 }
 
-export def cmpl-ssh [context?] {
-    if ($context | is-not-empty) {
+export def cmpl-ssh [buffer?] {
+    if ($buffer | is-not-empty) {
         do -i {
-            let target = $context | argx parse | get opt
+            let target = $buffer | argx parse | get opt
             let environ = $target | get -o environ
             let group = $target | get -o group
             if ($environ | is-not-empty) or ($group | is-not-empty) {
