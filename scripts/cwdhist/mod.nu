@@ -16,15 +16,24 @@ export def 'cwd history clean' [keyword] {
     }
 }
 
-export def 'cwd history list' [keyword --limit=20] {
+export def 'cwd history list' [
+    keyword
+    --limit=20
+    --sort-by-time(-t)
+] {
     let keyword = quote '%' $keyword '%'
+    let order = if $sort_by_time {
+        if $env.CWD_HISTORY_FULL { 'max(start_timestamp)' } else { 'recent' }
+    } else {
+        'count'
+    }
     if $env.CWD_HISTORY_FULL {
         open $nu.history-path | query db $"
             select cwd as value, count\(*\) as count
             from history
             where cwd like ($keyword)
             group by value
-            order by count desc
+            order by ($order) desc
             limit ($limit)
             ;"
     } else {
@@ -32,7 +41,7 @@ export def 'cwd history list' [keyword --limit=20] {
             select cwd as value, count
             from cwd_history
             where cwd like ($keyword)
-            order by count desc
+            order by ($order) desc
             limit ($limit)
             ;"
     }
@@ -74,7 +83,7 @@ export-env {
     $env.config.hooks.env_change.PWD ++= [{|_, dir|
         if $dir == $env.HOME { return }
         if ($env.CWD_HISTORY_BLOCK | any {|x| $dir =~ $x}) { return }
-        let suffix = (do --ignore-errors { $dir | path relative-to $env.HOME })
+        let suffix = do --ignore-errors { $dir | path relative-to $env.HOME }
         let path = if ($suffix | is-empty) {
             $dir
         } else {
