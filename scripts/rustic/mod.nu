@@ -51,7 +51,7 @@ def 'parse args' [] {
     mut rest = []
     for i in $c {
         if ($ra | is-not-empty) {
-            $opt = ($opt | insert $ra $i)
+            $opt = $opt | insert $ra $i
             $ra = ''
         } else {
             if ($i | str starts-with '-') {

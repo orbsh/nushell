@@ -132,7 +132,7 @@ def cmpl-config-scripts [] {
 }
 
 export def 'config edit' [script: string@cmpl-config-scripts] {
-    let f = ([$nu.default-config-dir scripts $'($script).nu'] | path join)
+    let f = [$nu.default-config-dir scripts $'($script).nu'] | path join
     e $f
 }
 

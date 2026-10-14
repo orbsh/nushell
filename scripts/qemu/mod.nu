@@ -40,7 +40,7 @@ export def qemu-run [
     | prepend user
     | str join ','
 
-    let ext = ($disk | path parse | get extension | str lowercase)
+    let ext = $disk | path parse | get extension | str lowercase
     let interface = if $ext == "qcow2" { "virtio" } else { "sata" }
     let drive = $'file=($disk),if=($interface),format=($ext)'
 

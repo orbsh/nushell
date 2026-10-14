@@ -9,8 +9,8 @@ export-env {
     # 1. Record command start time
     $env.config.hooks.pre_execution = [
         { ||
-            $env.CMD_START_TIME = (date now)
-            $env.LAST_COMMAND = (commandline)
+            $env.CMD_START_TIME = date now
+            $env.LAST_COMMAND = commandline
         }
     ]
 

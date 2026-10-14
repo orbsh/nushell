@@ -48,14 +48,14 @@ def get-args [] {
         opt: {}
     }
     for i in $a {
-        if ('Named' in $i) {
+        if 'Named' in $i {
             let named_items = $i.Named
             let name = $named_items | where {|j| ($j | is-not-empty) and ($j.item? | is-not-empty)} | get 0.item
             let expr_filtered = $named_items | where {|j| ($j | is-not-empty) and ($j.expr? | is-not-empty)}
             let expr = if ($expr_filtered | is-not-empty) { $expr_filtered.0.expr } else { {Bool: true} }
             $r.opt = $r.opt | upsert $name (expr-to-value $expr)
         }
-        if ('Positional' in $i) {
+        if 'Positional' in $i {
             $r.args ++= [(expr-to-value $i.Positional.expr)]
         }
     }

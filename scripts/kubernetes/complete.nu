@@ -44,7 +44,7 @@ export def cmpl-kube-ns [] {
 
 export def cmpl-kube-kind [] {
     let ctx = kube-config
-    let cache = ([$nu.cache-dir 'k8s-api-resources'] | path join $'($ctx.data.current-context).json')
+    let cache = [$nu.cache-dir 'k8s-api-resources'] | path join $'($ctx.data.current-context).json'
     ensure-cache-by-lines $cache $ctx.path {||
         kubectl api-resources | from ssv -a
         | each {|x| {value: $x.NAME description: $x.SHORTNAMES} }
@@ -93,9 +93,9 @@ export def cmpl-kube-jsonpath [buffer: string] {
             let l = $row | last
             let c = do -i {$m | get $l}
             if ($c | is-not-empty) and ($c | describe | str substring 0..<5) == 'table' {
-                $r = (0..(($c | length) - 1) | each {|x| $'($p).($l)[($x)]'})
+                $r = 0..(($c | length) - 1) | each {|x| $'($p).($l)[($x)]'}
             } else {
-                $r = ($m | columns | each {|x| $'($p).($x)'})
+                $r = $m | columns | each {|x| $'($p).($x)'}
             }
         }
     } else {

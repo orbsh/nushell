@@ -18,7 +18,7 @@ export def wait-cmd [action -i: duration = 1sec  -t: string='waiting'] {
     loop {
         print -e $"(ansi dark_gray)($t) (ansi dark_gray_italic)($i * $time)(ansi reset)"
         let c = do --ignore-errors $action | complete | get exit_code
-        if ($c == 0) { break }
+        if $c == 0 { break }
         sleep $i
         $time = $time + 1
     }

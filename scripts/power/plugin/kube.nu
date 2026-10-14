@@ -1,8 +1,8 @@
 ### kubernetes
 export def ensure-cache [cache path action] {
-    let ts = (do -i { ls ($path | into glob) | sort-by modified | reverse | get 0.modified })
+    let ts = do -i { ls ($path | into glob) | sort-by modified | reverse | get 0.modified }
     if ($ts | is-empty) { return false }
-    let tc = (do -i { ls $cache | get 0.modified })
+    let tc = do -i { ls $cache | get 0.modified }
     if not (($cache | path exists) and ($ts < $tc)) {
         mkdir ($cache | path dirname)
         do $action | save -f $cache
@@ -14,10 +14,10 @@ def "kube ctx" [] {
     mut cache = ''
     mut file = ''
     if ($env.KUBECONFIG? | is-empty) {
-        $cache = ([$nu.cache-dir 'power'] | path join 'kube.json')
+        $cache = [$nu.cache-dir 'power'] | path join 'kube.json'
         $file = $"($env.HOME)/.kube/config"
     } else {
-        $cache = ([$nu.cache-dir 'power'] | path join $"kube-($env.KUBECONFIG | str replace -a '/' ':').json")
+        $cache = [$nu.cache-dir 'power'] | path join $"kube-($env.KUBECONFIG | str replace -a '/' ':').json"
         $file = $env.KUBECONFIG
     }
     if not ($file | path exists) { return null }

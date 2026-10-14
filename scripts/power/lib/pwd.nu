@@ -32,15 +32,15 @@ export def "pwd_abbr" [bg] {
         $vcs.0
     }
 
-    mut dir_comp = ($cwd | path split)
-    let mpl = if ($env.NU_POWER_FRAME == 'default') { 2 } else { 4 }
+    mut dir_comp = $cwd | path split
+    let mpl = if $env.NU_POWER_FRAME == 'default' { 2 } else { 4 }
     if ($dir_comp | length) + ($vcso.b? | default [] | length) > 5 {
         let first = $dir_comp | first
         let last = $dir_comp | last
         let body = $dir_comp
         | slice 1..-2
         | each {|x| $x | str substring ..<$mpl }
-        $dir_comp = ([$first $body $last] | flatten)
+        $dir_comp = [$first $body $last] | flatten
     }
     let dir_comp = $dir_comp | path join
 

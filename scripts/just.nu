@@ -22,7 +22,7 @@ def cmpl-just-recipes [] {
 }
 
 def cmpl-just-args [buffer: string] {
-    let r = ($buffer | split row ' ')
+    let r = $buffer | split row ' '
     ^just -u --dump --dump-format json
         | from json
         | get recipes

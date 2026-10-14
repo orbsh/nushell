@@ -1,6 +1,6 @@
 use parser *
 
-let parse_rustic = (one-by-one main [
+let parse_rustic = one-by-one main [
     (end-of-line header)
     (space 'x' -l)
     (one-or-more 'body'
@@ -32,7 +32,7 @@ let parse_rustic = (one-by-one main [
             ])
         ])
     )
-])
+]
 
 rustic --help | complete | get stdout | do $parse_rustic
 | get val.2.val

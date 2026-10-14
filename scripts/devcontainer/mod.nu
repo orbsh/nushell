@@ -357,7 +357,7 @@ export def 'main' [
         }
         ($baseimg_date | is-empty) or ($baseimg_date < $manifest_date)
     } else {
-        let c = (git-last-changes)
+        let c = git-last-changes
         let r = $manifest in $c
         print $"git: ($manifest) (if $r {'has'} else {'not'}) changed"
         $r

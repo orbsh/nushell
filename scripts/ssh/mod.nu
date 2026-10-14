@@ -3,7 +3,7 @@ use argx
 export def 'str max-length' [] {
     $in | reduce -f 0 {|x, a|
         if ($x|is-empty) { return $a }
-        let l = ($x | str length)
+        let l = $x | str length
         if $l > $a { $l } else { $a }
     }
 }

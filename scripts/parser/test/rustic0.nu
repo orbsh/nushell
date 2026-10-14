@@ -19,7 +19,7 @@ Commands:
 
 '
 
-let parse_rustic = (one-by-one main [
+let parse_rustic = one-by-one main [
     (end-of-line header)
     (space 'x' -l)
     (one-or-more 'body'
@@ -51,7 +51,7 @@ let parse_rustic = (one-by-one main [
             ])
         ])
     )
-])
+]
 
 $b | do $parse_rustic
 | get val.2.val

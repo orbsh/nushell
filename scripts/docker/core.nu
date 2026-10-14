@@ -471,10 +471,10 @@ export def --env image-volume-register [
     } else {
         $mount
     }
-    $env.CNTRLAYER = ($env.CNTRLAYER | upsert $name {
+    $env.CNTRLAYER = $env.CNTRLAYER | upsert $name {
         image: $image
         mount: $m
-    })
+    }
     image-pull $image
 }
 

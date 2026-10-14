@@ -151,7 +151,7 @@ export def scratch-ensure-tags [tags] {
             $idx += 1
         }
 
-        if ($name != null) {
+        if $name != null {
             for t in ($ts | slice $idx..) {
                 $pid = sqlx $"insert into tag \(parent_id, name\) values
                 \(($pid), (Q $t)\)

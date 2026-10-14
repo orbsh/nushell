@@ -5,7 +5,7 @@ def cmpl-df-ex [] {
 export def dfx [-x:list<string>] {
     mut sys_disks = {}
     for i in (sys disks) {
-        if ($i.device not-in $sys_disks) {
+        if $i.device not-in $sys_disks {
             $sys_disks = $sys_disks | insert $i.device ($i | select type removable kind)
         }
     }

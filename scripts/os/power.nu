@@ -17,7 +17,7 @@ def cmp-fs [] {
 
 export def eject-disk [fs: string@cmp-fs] {
     print $"(ansi y)Attempting to unmount ($fs)...(ansi reset)"
-    let unmount_res = (udisksctl unmount -b $fs | complete)
+    let unmount_res = udisksctl unmount -b $fs | complete
 
     if $unmount_res.exit_code != 0 {
         print $"(ansi r)Error: Target is busy or cannot be unmounted.(ansi reset)"
@@ -35,7 +35,7 @@ export def eject-disk [fs: string@cmp-fs] {
         print $"(ansi b)Flushing caches and cutting power...(ansi reset)"
         sync # Essential for Btrfs metadata integrity on HDDs
 
-        let pwr_res = (udisksctl power-off -b $disk | complete)
+        let pwr_res = udisksctl power-off -b $disk | complete
         if $pwr_res.exit_code == 0 {
             print $"(ansi g)✅ Success: Hardware stopped. Safe to unplug.(ansi reset)"
         } else {

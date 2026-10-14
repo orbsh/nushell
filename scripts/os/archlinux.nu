@@ -13,11 +13,10 @@ def parse_pkg_list [] {
     }
     for i in 0..<($d | length) {
         if ($i mod 2) == 0 {
-            $cur = ($d
+            $cur = $d
                 | get $i
                 | parse -r '(?<t>[^ ]+)/(?<n>[^ ]+) (?<v>[^ ]+)( \[(?<c>.+?)\])?(?<x>.+)?'
                 | first
-                )
         } else {
             let t = $"($char.i)($cur.t)"
             let v = $"($char.v)($cur.v)"

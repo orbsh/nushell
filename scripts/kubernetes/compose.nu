@@ -22,14 +22,14 @@ export def kube-compose [--without-service(-s)] {
                     let dv = if $dn in $dpl_svc {
                         $dpl_svc | get $dn
                     } else { [] }
-                    $dpl_svc = ($dpl_svc | upsert $dn ($dv | append $s.metadata.name))
+                    $dpl_svc = $dpl_svc | upsert $dn ($dv | append $s.metadata.name)
                 }
             }
         }
-        $svc = ($svcs
+        $svc = $svcs
         | reduce -f {} {|i, a|
             $a | upsert $i.metadata.name $i.spec.ports
-        })
+        }
     }
     let dpl_svc = $dpl_svc
     let svc = $svc

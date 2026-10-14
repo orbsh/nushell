@@ -30,7 +30,7 @@ export def --wrapped dry [...x --prefix='    ' --strip] {
     let w = term size | get columns
     mut lines = []
     for a in (unnest (if $strip { $x.0 } else { $x })) {
-        mut nl = ('' | fill -c $prefix -w $a.lv)
+        mut nl = '' | fill -c $prefix -w $a.lv
         for t in $a.it {
             let line = if ($nl | str replace -a ' ' '' | is-empty) { $"($nl)($t)" } else { $"($nl) ($t)" }
             if ($line | str length) > $w {

@@ -47,7 +47,7 @@ def decorator [ ] {
                 let dlm = $env.NU_POWER_CONFIG.theme.delimitor.power
                 match $direction {
                     '|>' => {
-                        let l = (ansi -e {bg: $color})
+                        let l = ansi -e {bg: $color}
                         let r = $'(ansi -e {fg: $color, bg: $next_color})($dlm.left)'
                         $'($l)($s)($r)'
                     }
@@ -159,7 +159,7 @@ def up_prompt [segment] {
         | each {|y|
             $y.item
             | reduce -f [] {|x, acc|
-                let y = (do $x null)
+                let y = do $x null
                 if $y.1 == null {
                     $acc
                 } else {
@@ -204,7 +204,7 @@ def up_center_prompt [segment] {
         | each {|y|
             $y
             | reduce -f [] {|x, acc|
-                let y = (do $x null)
+                let y = do $x null
                 if $y.1 == null {
                     $acc
                 } else {
@@ -262,10 +262,10 @@ export def --env init [] {
             )
         }
         'fill' => {
-            $env.PROMPT_COMMAND = (up_prompt $env.NU_POWER_SCHEMA)
+            $env.PROMPT_COMMAND = up_prompt $env.NU_POWER_SCHEMA
         }
         'center' => {
-            $env.PROMPT_COMMAND = (up_center_prompt $env.NU_POWER_SCHEMA)
+            $env.PROMPT_COMMAND = up_center_prompt $env.NU_POWER_SCHEMA
         }
     }
 
@@ -294,8 +294,8 @@ export def --env init [] {
     if $env.NU_POWER_DECORATOR == 'power' {
         $env.config.menus = $env.config.menus
         | each {|x|
-            if ($x.marker in $env.NU_POWER_MENU_MARKER) {
-                let c = ($env.NU_POWER_MENU_MARKER | get $x.marker)
+            if $x.marker in $env.NU_POWER_MENU_MARKER {
+                let c = $env.NU_POWER_MENU_MARKER | get $x.marker
                 $x | upsert marker $'(ansi -e {fg: $c})(char nf_left_segment_thin) '
             } else {
                 $x
@@ -378,7 +378,7 @@ export def --env eject [] {
 }
 
 export def --env hook [] {
-    $env.config = ( $env.config | upsert hooks.env_change { |config|
+    $env.config = $env.config | upsert hooks.env_change { |config|
         let init = [{|before, after| if ($before | is-not-empty) { init } }]
         $config.hooks.env_change
         | upsert NU_POWER_SCHEMA $init
@@ -392,7 +392,7 @@ export def --env hook [] {
             }
         }]
 
-    })
+    }
 }
 
 export-env {

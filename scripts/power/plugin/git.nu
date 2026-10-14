@@ -1,9 +1,9 @@
 ### git
 def _git_status [] {
     # TODO: show-stash
-    let raw_status = (do -i { git --no-optional-locks status --porcelain=2 --branch | lines })
+    let raw_status = do -i { git --no-optional-locks status --porcelain=2 --branch | lines }
 
-    let stashes = (do -i { git stash list | lines | length })
+    let stashes = do -i { git stash list | lines | length }
 
     mut status = {
         idx_added_staged    : 0
@@ -30,12 +30,12 @@ def _git_status [] {
     if ($raw_status | is-empty) { return $status }
 
     for s in $raw_status {
-        let r = ($s | split row ' ')
+        let r = $s | split row ' '
         match $r.0 {
             '#' => {
                 match ($r.1 | str substring 7..) {
                     'oid' => {
-                        $status.commit_hash = ($r.2 | str substring 0..<8)
+                        $status.commit_hash = $r.2 | str substring 0..<8
                     }
                     'head' => {
                         $status.branch = $r.2
@@ -44,8 +44,8 @@ def _git_status [] {
                         $status.remote = $r.2
                     }
                     'ab' => {
-                        $status.ahead = ($r.2 | into int)
-                        $status.behind = ($r.3 | into int | math abs)
+                        $status.ahead = $r.2 | into int
+                        $status.behind = $r.3 | into int | math abs
                     }
                 }
             }
@@ -135,7 +135,7 @@ export-env {
         let summary = (
             $env.NU_PROMPT_GIT_FORMATTER
             | reduce -f "" {|x, acc|
-                let y = ($status | get $x.0)
+                let y = $status | get $x.0
                 if $y > 0 {
                     $acc + $"(ansi $'light_($x.2)_dimmed')($x.1)($y)"
                 } else {

@@ -29,8 +29,8 @@ def cmpl-proxys [buffer: string] {
 export def --env "toggle proxy" [
     proxy?:string@cmpl-proxys
 ] {
-    let has_set = ($env.https_proxy? | is-not-empty)
-    let no_val = ($proxy | is-empty)
+    let has_set = $env.https_proxy? | is-not-empty
+    let no_val = $proxy | is-empty
     if $has_set and $no_val {
         echo 'hide proxy'
         {

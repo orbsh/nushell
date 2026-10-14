@@ -23,28 +23,28 @@ export def spawn [
   mut args = []
 
   if $working_directory != null {
-    $args = ($args | prepend ["--working-directory", $working_directory])
+    $args = $args | prepend ["--working-directory", $working_directory]
   }
   if $immediate {
-    $args = ($args | prepend "--immediate")
+    $args = $args | prepend "--immediate"
   }
   if $stashed {
-    $args = ($args | prepend "--stashed")
+    $args = $args | prepend "--stashed"
   }
   if $delay != null {
-    $args = ($args | prepend ["--delay" ($delay | format duration sec | parse "{secs} {_}" | get 0.secs)])
+    $args = $args | prepend ["--delay" ($delay | format duration sec | parse "{secs} {_}" | get 0.secs)]
   }
   if $group != null {
-    $args = ($args | prepend ["--group" $group])
+    $args = $args | prepend ["--group" $group]
   }
   if $after != null {
-    $args = ($args | prepend ["--after" $after])
+    $args = $args | prepend ["--after" $after]
   }
   if $priority != null {
-    $args = ($args | prepend ["--priority" $priority])
+    $args = $args | prepend ["--priority" $priority]
   }
   if $label != null {
-      $args = ($args | prepend ["--label" $label])
+      $args = $args | prepend ["--label" $label]
   }
 
   let source_path = mktemp --tmpdir --suffix "-nu-task"
@@ -112,10 +112,10 @@ export def start [
   mut args = []
 
   if $group != null {
-    $args = ($args | prepend ["--group" $group])
+    $args = $args | prepend ["--group" $group]
   }
   if $all {
-    $args = ($args | prepend "--all")
+    $args = $args | prepend "--all"
   }
 
   pueue start ...$args
@@ -143,31 +143,31 @@ export def restart [
   mut args = []
 
   if $all_failed {
-    $args = ($args | prepend "--all-failed")
+    $args = $args | prepend "--all-failed"
   }
   if $failed_in_group != null {
-    $args = ($args | prepend "--failed-in-group")
+    $args = $args | prepend "--failed-in-group"
   }
   if $start_immediately {
-    $args = ($args | prepend "--start-immediately")
+    $args = $args | prepend "--start-immediately"
   }
   if $stashed {
-    $args = ($args | prepend "--stashed")
+    $args = $args | prepend "--stashed"
   }
   if $in_place {
-    $args = ($args | prepend "--in-place")
+    $args = $args | prepend "--in-place"
   }
   if $not_in_place {
-    $args = ($args | prepend "--not-in-place")
+    $args = $args | prepend "--not-in-place"
   }
   if $edit {
-    $args = ($args | prepend "--edit")
+    $args = $args | prepend "--edit"
   }
   if $edit_path {
-    $args = ($args | prepend "--edit-path")
+    $args = $args | prepend "--edit-path"
   }
   if $edit_label {
-    $args = ($args | prepend "--edit-label")
+    $args = $args | prepend "--edit-label"
   }
 
   pueue restart ...$args ...$ids
@@ -187,13 +187,13 @@ export def pause [
   mut args = []
 
   if $group != null {
-    $args = ($args | prepend "--group")
+    $args = $args | prepend "--group"
   }
   if $all != null {
-    $args = ($args | prepend "--all")
+    $args = $args | prepend "--all"
   }
   if $wait != null {
-    $args = ($args | prepend "--wait")
+    $args = $args | prepend "--wait"
   }
 
   pueue pause ...$args ...$ids
@@ -211,13 +211,13 @@ export def kill [
   mut args = []
 
   if $group != null {
-    $args = ($args | prepend ["--group" $group])
+    $args = $args | prepend ["--group" $group]
   }
   if $all {
-    $args = ($args | prepend "--all")
+    $args = $args | prepend "--all"
   }
   if $signal != null {
-    $args = ($args | prepend ["--signal" $signal])
+    $args = $args | prepend ["--signal" $signal]
   }
 
   pueue kill ...$args ...$ids
@@ -245,13 +245,13 @@ export def edit [
   mut args = []
 
   if $command {
-    $args = ($args | prepend "--command")
+    $args = $args | prepend "--command"
   }
   if $path {
-    $args = ($args | prepend "--path")
+    $args = $args | prepend "--path"
   }
   if $label {
-    $args = ($args | prepend "--label")
+    $args = $args | prepend "--label"
   }
 
   pueue edit ...$args $id
@@ -331,7 +331,7 @@ export def log [
     }
   }
 
-  if (($ids | length) == 1) {
+  if ($ids | length) == 1 {
     if $tail {
       let args = if $last != null {
         ["--lines" $last]
@@ -379,16 +379,16 @@ export def wait [
   mut args = []
 
   if $group != null {
-    $args = ($args | prepend ["--group" $group])
+    $args = $args | prepend ["--group" $group]
   }
   if $all {
-    $args = ($args | prepend $all)
+    $args = $args | prepend $all
   }
   if $quiet {
-    $args = ($args | prepend $quiet)
+    $args = $args | prepend $quiet
   }
   if $status != null {
-    $args = ($args | prepend ["--status" $status])
+    $args = $args | prepend ["--status" $status]
   }
 
   pueue wait ...$args ...$ids
@@ -402,10 +402,10 @@ export def clean [
   mut args = []
 
   if $successful_only {
-    $args = ($args | prepend "--successful-only")
+    $args = $args | prepend "--successful-only"
   }
   if $group != null {
-    $args = ($args | prepend ["--group" $group])
+    $args = $args | prepend ["--group" $group]
   }
 
   pueue clean ...$args

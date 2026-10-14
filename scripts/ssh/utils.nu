@@ -10,10 +10,10 @@ def cmpl-scp [buffer: string] {
         | lines
         | each {|x| $"($n | get 0):($x)"}
     } else {
-        let files = (do -i {
+        let files = do -i {
             ls -a ($"($p)*" | into glob)
             | each {|x| if $x.type == dir { $"($x.name)/"} else { $x.name }}
-        })
+        }
         let ssh = $ssh | each { $in | update value {|x| $"($x.value):"} }
         $files | append $ssh
     }

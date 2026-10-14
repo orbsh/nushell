@@ -7,15 +7,15 @@ def safe_get [path obj] {
         let p = $ps | first
 
         if ($p | describe -d).type == closure {
-            $r = ($r | do $p $r)
-            $ps = ($ps | slice 1..)
+            $r = $r | do $p $r
+            $ps = $ps | slice 1..
             continue
         }
 
         match ($r | describe -d).type {
             record => {
                 if $p in $r {
-                    $r = ($r | get $p)
+                    $r = $r | get $p
                 } else {
                     $r = null
                 }
@@ -28,7 +28,7 @@ def safe_get [path obj] {
                 $r = null
             }
         }
-        $ps = ($ps | slice 1..)
+        $ps = $ps | slice 1..
     }
     $r
 }

@@ -5,7 +5,7 @@ export def wait-value [action -i: duration = 1sec  -t: string='waiting'] {
     loop {
         print -e $"(ansi light_gray)($t) (ansi light_gray_italic)($i * $time)(ansi reset)"
         let c = do --ignore-errors $action
-        if ($c) { break }
+        if $c { break }
         sleep $i
         $time = $time + 1
     }
@@ -41,7 +41,7 @@ export def run-cmd [
             | items {|k, v| [-p $"($k):($v)"] } | flatten
             let envs = $opt.environment? | default {}
             | items {|k, v| [-e $"($k):($v)"] } | flatten
-            let entrypoint = if ('entrypoint' in $opt) { [--entrypoint $opt.entrypoint] } else { [] }
+            let entrypoint = if 'entrypoint' in $opt { [--entrypoint $opt.entrypoint] } else { [] }
             let wd = $opt.workdir? | default '/app'
             let entry = [$wd $entry] | path join
             let cmd = $cmd | render {_: $entry, stdin: $i, args: $args, ...$opt}
@@ -161,7 +161,7 @@ export def cmpl-kind-preset [buffer: string] {
         let k = $buffer | argx parse
         let k1 = $k | get -o opt.kind
         let k2 = $k | get -o pos.kind
-        let k = ($k1 | default $k2)
+        let k = $k1 | default $k2
         sqlx $"select name as value, kind as description from kind_preset where kind = (Q $k)"
     }
 }

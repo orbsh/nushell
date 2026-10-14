@@ -157,7 +157,7 @@ def tag-tree [x r={}] {
         } else {
             $r | insert ':' [$x.node]
         }
-        if ($t == '') {
+        if $t == '' {
             $r | merge $n
         } else {
             $r | upsert $t $n
@@ -300,7 +300,7 @@ def 'fmt leaves' [
     mut body_len = 0
     let body = if $verbose and ($o.body? | is-not-empty) {
         let l = $o.body | lines
-        $body_len = ($l | length)
+        $body_len = $l | length
         $l
         | slice ..<$body_lines
         | each {$"($indent)  (ansi $color.body)($in)(ansi reset)"}

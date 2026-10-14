@@ -54,7 +54,7 @@ export def lit [t: string, e] {
     {|pos|
         let o = $in
         let l = $e | str length
-        let a = ($o | str substring 0..<$l)
+        let a = $o | str substring 0..<$l
         if $a == $e {
             {
                 len: $l

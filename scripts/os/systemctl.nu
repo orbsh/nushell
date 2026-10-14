@@ -107,7 +107,7 @@ def cmpl-systemctl-x [buffer: string] {
     let input = $ctx.args.2?
     let user = 'user' in $ctx.opt
     if $cmd in [start stop restart status enable disable] {
-        let services = (ssc services $user $input)
+        let services = ssc services $user $input
         if $cmd == 'status' {
             $services
         } else if $cmd in [start enable] {

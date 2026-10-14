@@ -58,12 +58,12 @@ export def kube-conf-delete [name: string@cmpl-kube-ctx] {
     let d = $kc.data
     let ctx = $d | get contexts | where name == $name | get 0
     let rctx = $d | get contexts | where name != $name
-    let user =  if ($ctx.context.user in ($rctx | get context.user)) {
+    let user =  if $ctx.context.user in ($rctx | get context.user) {
         $d | get users
     } else {
         $d | get users | where name != $ctx.context.user
     }
-    let cluster = if ($ctx.context.cluster in ($rctx | get context.cluster)) {
+    let cluster = if $ctx.context.cluster in ($rctx | get context.cluster) {
         $d | get clusters
     } else {
         $d | get clusters | where name != $ctx.context.cluster
