@@ -1,7 +1,8 @@
 use base.nu *
+use argx
 
 export def cmpl-image-vols [] {
-    $env.CNTRLAYER | keys
+    $env.CNTRLAYER | columns
 }
 
 export def cmpl-docker-network [] {
@@ -57,9 +58,12 @@ export def cmpl-docker-images [] {
 }
 
 export def cmpl-docker-cp [buffer: string] {
-    let argv = $buffer | split row ' '
-    let p = if ($argv | length) > 2 { $argv | get 2 } else { $argv | get 1 }
-    let container = container ps
+    let ctx = $buffer | argx parse
+    # a trailing space starts a new argument; otherwise the cursor sits in the
+    # last token (argx parsing keeps flags out of the way, unlike a plain split)
+    let p = if ($buffer | str ends-with ' ') { '' } else { $ctx.args | last | default '' }
+    # `container cp` also works on stopped containers
+    let container = container ps -a
         | from ssv -a
         | each {|x| {description: $x.'CONTAINER ID' value: $"($x.NAMES):" }}
     let n = $p | split row ':'
@@ -93,14 +97,15 @@ export def cmpl-docker-run-vol [] {
     ]
 }
 
-export def cmpl-docker-run-sshkey [ctx: string, pos: int] {
+export def cmpl-docker-run-sshkey [] {
     ls ~/.ssh/**/*.pub
     | get name
     | path relative-to ~/.ssh
 }
 
 export def cmpl-docker-run-proxy [] {
-    let hostaddr = do -i { hostname -I | split row ' ' | get 0 }
+    # hostname -I is net-tools only; ask the routing table for the egress address
+    let hostaddr = do -i { ip route get 1.1.1.1 | parse -r 'src (?<ip>[0-9.]+)' | get ip.0 } | default ''
     [ $"http://($hostaddr):7890" $"http://($hostaddr):" ]
 }
 

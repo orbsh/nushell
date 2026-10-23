@@ -9,17 +9,16 @@ export def containers-network-list [
     if ($name | is-empty) {
         container network ls | from ssv -a
     } else {
-        container network inspect $name
-        | from json
-        | do {
-            if $subnet {
-                match $env.CNTRCTL {
-                    podman => ($in | get subnets.0 )
-                    _ => ($in | get IPAM.Config.0)
-                }
-            } else {
-                $in
+        let raw = container network inspect $name | from json
+        if $subnet {
+            # inspect answers with an array holding the one inspected network
+            let net = $raw | first
+            match $env.CNTRCTL {
+                podman => ($net | get subnets.0)
+                _ => ($net | get IPAM.Config.0)
             }
+        } else {
+            $raw
         }
     }
 }
