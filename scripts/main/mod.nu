@@ -14,6 +14,10 @@ $env.config.history.file_format = "sqlite"
 $env.config.history.isolation = true
 $env.config.history.ignore_space_prefixed = true
 $env.config.completions.algorithm = "fuzzy" # prefix|substring|fuzzy
+# 0 disables the cross-prompt completion cache: a cached prefix answers with the
+# previous run's suggestions, so state-dependent completers (kubectl namespaces,
+# container images) keep returning the old list after the state changes.
+$env.config.completions.cache_size = 0
 $env.config.completions.partial = false # true breaks sourced menus (nu 0.116) - Alt-o
 $env.config.table.header_on_separator = true
 $env.config.table.mode = "frameless" # light|compact|frameless

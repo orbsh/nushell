@@ -1,6 +1,27 @@
 use argx
 use common.nu *
 
+# argx reports a flag typed without a value as a bare `true`; treat that as absent
+def opt-str [ctx, field: string] {
+    let v = $ctx.opt | get -o $field
+    if ($v | describe -d).type == 'string' { $v } else { '' }
+}
+
+# follow one jsonpath segment: `name`, `name[0]`, `[0]`, `name[0][1]`
+def jsonpath-step [acc, seg: string] {
+    let parts = $seg | split row '['
+    let head = $parts | first
+    let idx = $parts | skip 1 | each {|x| $x | str trim --char ']' }
+    let base = if ($head | is-empty) {
+        $acc
+    } else if ($acc | describe -d).type == 'record' {
+        $acc | get -o $head
+    } else {
+        null
+    }
+    $idx | reduce -f $base {|i, a| do -i { $a | get -o ($i | into int) } }
+}
+
 ### ctx
 export def kube-config [] {
     let file = if ($env.KUBECONFIG? | is-empty) { $"($env.HOME)/.kube/config" } else { $env.KUBECONFIG | path expand }
@@ -54,15 +75,18 @@ export def cmpl-kube-kind [] {
 
 export def cmpl-kube-res [buffer: string] {
     let ctx = $buffer | argx parse
-    let kind = $ctx | get args.0
-    # -a 走 -A（跨 ns），而 cmpl-kube-deploys-and-pods 的 -a 只表示「补 pod 名」
+    let kind = $ctx.args | get -o 0
+    # -a means -A here (all namespaces); the -a of cmpl-kube-deploys-and-pods only
+    # switches the suggestion form between deployment prefixes and pod names
     let all = $ctx.opt.all? | default false
-    let args = if $all {
+    let selector = opt-str $ctx selector
+    mut args = if $all {
         [-A]
-    } else if ($ctx.opt.namespace? | is-not-empty) {
-        [-n $ctx.opt.namespace]
     } else {
-        []
+        opt-str $ctx namespace | with-flag -n
+    }
+    if ($selector | is-not-empty) {
+        $args ++= [-l $selector]
     }
     let res = kubectl get ...$args $kind | from ssv -a
     if $all {
@@ -75,49 +99,49 @@ export def cmpl-kube-res [buffer: string] {
     }
 }
 
-export def cmpl-kube-res-via-name [buffer: string] {
-    let ctx = $buffer | argx parse
-    let kind = $env.KUBERNETES_RESOURCE_ABBR | get ($ctx.cmd | split row '-' | last)
-    let ns = if ($ctx.opt.namespace? | is-empty) { [] } else { [-n $ctx.opt.namespace] }
-    kubectl get ...$ns $kind | from ssv -a | get NAME
-}
-
 export def cmpl-kube-jsonpath [buffer: string] {
     let ctx = $buffer | argx parse
-    let kind = $ctx.args.0
-    let res = $ctx.args.1
-    let path = $ctx.opt.jsonpath?
-    let ns = if ($ctx.opt.namespace? | is-empty) { [] } else { [-n $ctx.opt.namespace] }
-    mut r = []
-    if ($path | is-empty) {
-        if ($buffer | str ends-with '-p ') {
-            $r = ['.']
-        } else {
-            $r = ['']
-        }
-    } else if ($path | str starts-with '.') {
-        let row = $path | split row '.'
-        let p = $row  | slice ..-2 | str join '.'
-        if ($p | is-empty) {
-            $r = ( kubectl get ...$ns -o json $kind $res
-                 | from json
-                 | columns
-                 | each {|x| $'($p).($x)'}
-                 )
-        } else {
-            let m = kubectl get ...$ns $kind $res $"--output=jsonpath={($p)}" | from json
-            let l = $row | last
-            let c = do -i {$m | get $l}
-            if ($c | is-not-empty) and ($c | describe | str substring 0..<5) == 'table' {
-                $r = 0..(($c | length) - 1) | each {|x| $'($p).($l)[($x)]'}
-            } else {
-                $r = $m | columns | each {|x| $'($p).($x)'}
-            }
-        }
+    let kind = $ctx.args | get -o 0
+    let res = $ctx.args | get -o 1
+    let path = opt-str $ctx jsonpath
+    let args = if ($ctx.opt.all? | default false) {
+        [-A]
     } else {
-        $r = ['']
+        opt-str $ctx namespace | with-flag -n
     }
-    $r
+
+    if ($path | is-empty) {
+        return (if ($buffer | str ends-with '-p ') { ['.'] } else { [''] })
+    }
+    if not ($path | str starts-with '.') {
+        return ['']
+    }
+
+    # a named resource is one document; without one, take the first item as the
+    # structural sample — keys repeat across items and the whole list is not a
+    # single JSON value
+    let doc = if ($res | is-not-empty) {
+        do -i { kubectl get ...$args -o json $kind $res | from json }
+    } else {
+        do -i { kubectl get ...$args $kind "--output=jsonpath={.items[0]}" | from json }
+    }
+    if ($doc | is-empty) {
+        return ['']
+    }
+
+    # walk down to the parent of the segment being typed
+    let row = $path | split row '.'
+    let parent = $row | slice 1..-2 | reduce -f $doc {|seg, acc| jsonpath-step $acc $seg }
+    if ($parent | is-empty) {
+        return ['']
+    }
+
+    let p = $row | slice ..-2 | str join '.'
+    if ($parent | describe -d).type in ['table' 'list'] {
+        0..<($parent | length) | each {|i| $'($p)[($i)]' }
+    } else {
+        $parent | columns | each {|x| $'($p).($x)'}
+    }
 }
 
 
@@ -151,12 +175,19 @@ export def cmpl-kube-deploys-and-pods [buffer: string] {
 
 export def cmpl-kube-ctns [buffer: string] {
     let ctx = $buffer | argx parse
-    mut args = []
-    if ($ctx.opt.namespace? | is-not-empty) {
-        $args ++= [-n $ctx.opt.namespace]
+    let ns = opt-str $ctx namespace | with-flag -n
+    # kube-log / kube-attach take the pod as the first positional, kube-copy hides
+    # it in a <pod>:<path> argument, so prefer whatever carries the ':'
+    let remote = $ctx.args | where {|x| ($x | describe -d).type == 'string' and ($x | str contains ':') } | get -o 0
+    let pod = if ($remote | is-not-empty) {
+        $remote | split row ':' | first
+    } else {
+        $ctx.args | get -o 0
     }
-    let pod = $ctx.args.0
-    kubectl get ...$args pod $pod -o jsonpath={.spec.containers[*].name} | split row ' '
+    if ($pod | is-empty) {
+        return []
+    }
+    kubectl get ...$ns pod $pod -o jsonpath={.spec.containers[*].name} | split row ' '
 }
 
 export def cmpl-port-forward-type [] {
@@ -181,18 +212,17 @@ export def cmpl-kube-port [buffer: string] {
 
 export def cmpl-kube-cp [buffer: string] {
     let ctx = $buffer | argx parse
+    if ($ctx.args | is-empty) {
+        return []
+    }
     let p = $ctx.args | last
-    mut args = []
-    if ($ctx.opt.namespace? | is-not-empty) {
-        $args ++= [-n $ctx.opt.namespace]
-    }
-    if ($ctx.opt.container? | is-not-empty) {
-        $args ++= [-c ctx.opt.container]
-    }
-    let ctn = kubectl get pod ...$args | from ssv -a | each {|x| {description: $x.READY value: $"($x.NAME):" }}
+    let ns = opt-str $ctx namespace | with-flag -n
+    # -c belongs to `kubectl exec` only; `kubectl get pod` has no such flag
+    let ctn_flag = opt-str $ctx container | with-flag -c
+    let ctn = kubectl get pod ...$ns | from ssv -a | each {|x| {description: $x.READY value: $"($x.NAME):" }}
     let n = $p | split row ':'
     if $"($n | get 0):" in ($ctn | get value) {
-        kubectl exec ...$args ($n | get 0) -- sh -c $"ls -dp ($n | get 1)*"
+        kubectl exec ...$ns ...$ctn_flag ($n | get 0) -- sh -c $"ls -dp ($n | get 1)*"
         | lines
         | each {|x| $"($n | get 0):($x)"}
     } else {
