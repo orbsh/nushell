@@ -55,8 +55,24 @@ export def cmpl-kube-kind [] {
 export def cmpl-kube-res [buffer: string] {
     let ctx = $buffer | argx parse
     let kind = $ctx | get args.0
-    let ns = if ($ctx.opt.namespace? | is-empty) { [] } else { [-n $ctx.opt.namespace] }
-    kubectl get ...$ns $kind | from ssv -a | get NAME
+    # -a 走 -A（跨 ns），而 cmpl-kube-deploys-and-pods 的 -a 只表示「补 pod 名」
+    let all = $ctx.opt.all? | default false
+    let args = if $all {
+        [-A]
+    } else if ($ctx.opt.namespace? | is-not-empty) {
+        [-n $ctx.opt.namespace]
+    } else {
+        []
+    }
+    let res = kubectl get ...$args $kind | from ssv -a
+    if $all {
+        $res | each {|x|
+            let d = [$x.NAMESPACE? $x.STATUS?] | where {|i| $i | is-not-empty } | str join (char tab)
+            {value: $x.NAME, description: $d}
+        }
+    } else {
+        $res | get NAME
+    }
 }
 
 export def cmpl-kube-res-via-name [buffer: string] {
