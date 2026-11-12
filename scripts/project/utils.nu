@@ -44,19 +44,12 @@ export def 'run-and-watch' [
     }
 }
 
-export def parse-env [] {
-    $in
-    | lines
-    | parse -r '\s*(?<k>.+?)\s*=\s*(?<v>.+)'
-    | reduce -f {} {|x, acc| $acc | upsert $x.k $x.v}
-}
-
 export def --env direnv [
     mod?:string=$ID
     --env-file(-e):string='.env'
 ] {
     let _ = if ($env_file | path exists) {
-        open $env_file | parse-env
+        open $env_file
     }
     | default {}
 
